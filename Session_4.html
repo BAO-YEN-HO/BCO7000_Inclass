@@ -173,7 +173,12 @@ pre code {
 
 <div id="data-wrangling-exercises" class="section level1">
 <h1>Data wrangling exercises</h1>
-<p><strong>YEAH</strong></p>
+<p><strong>YEAH</strong> dplyr is a grammar of data manipulation, providing a consistent set of verbs that help you solve the most common data manipulation challenges:</p>
+<pre><code>mutate() adds new variables that are functions of existing variables
+select() picks variables based on their names.
+filter() picks cases based on their values.
+summarise() reduces multiple values down to a single summary.
+arrange() changes the ordering of the rows.</code></pre>
 <pre class="r"><code>library(tidyverse)</code></pre>
 <pre><code>## -- Attaching packages --------------------------------------- tidyverse 1.3.1 --</code></pre>
 <pre><code>## v ggplot2 3.3.3     v purrr   0.3.4
@@ -258,6 +263,138 @@ pre code {
 <pre><code>## [1] 18249    14</code></pre>
 <pre class="r"><code>avocado_short&lt;-avocado%&gt;%
   select(date, average_price, total_volume)</code></pre>
+<pre class="r"><code>avocado%&gt;%select(date, average_price, total_volume)</code></pre>
+<pre><code>## # A tibble: 18,249 x 3
+##    date       average_price total_volume
+##    &lt;date&gt;             &lt;dbl&gt;        &lt;dbl&gt;
+##  1 2015-12-27          1.33       64237.
+##  2 2015-12-20          1.35       54877.
+##  3 2015-12-13          0.93      118220.
+##  4 2015-12-06          1.08       78992.
+##  5 2015-11-29          1.28       51040.
+##  6 2015-11-22          1.26       55980.
+##  7 2015-11-15          0.99       83454.
+##  8 2015-11-08          0.98      109428.
+##  9 2015-11-01          1.02       99811.
+## 10 2015-10-25          1.07       74339.
+## # ... with 18,239 more rows</code></pre>
+<pre class="r"><code>avocado%&gt;%select(-average_price) #to exclude variables</code></pre>
+<pre><code>## # A tibble: 18,249 x 13
+##       x1 date       total_volume x4046   x4225 x4770 total_bags small_bags
+##    &lt;dbl&gt; &lt;date&gt;            &lt;dbl&gt; &lt;dbl&gt;   &lt;dbl&gt; &lt;dbl&gt;      &lt;dbl&gt;      &lt;dbl&gt;
+##  1     0 2015-12-27       64237. 1037.  54455.  48.2      8697.      8604.
+##  2     1 2015-12-20       54877.  674.  44639.  58.3      9506.      9408.
+##  3     2 2015-12-13      118220.  795. 109150. 130.       8145.      8042.
+##  4     3 2015-12-06       78992. 1132   71976.  72.6      5811.      5677.
+##  5     4 2015-11-29       51040.  941.  43838.  75.8      6184.      5986.
+##  6     5 2015-11-22       55980. 1184.  48068.  43.6      6684.      6556.
+##  7     6 2015-11-15       83454. 1369.  73673.  93.3      8319.      8197.
+##  8     7 2015-11-08      109428.  704. 101815.  80        6829.      6267.
+##  9     8 2015-11-01       99811. 1022.  87316.  85.3     11388.     11105.
+## 10     9 2015-10-25       74339.  842.  64757. 113        8626.      8061.
+## # ... with 18,239 more rows, and 5 more variables: large_bags &lt;dbl&gt;,
+## #   x_large_bags &lt;dbl&gt;, type &lt;chr&gt;, year &lt;dbl&gt;, region &lt;chr&gt;</code></pre>
+<pre class="r"><code>avocado%&gt;%rename(extra_small=x4046) #To rename variables</code></pre>
+<pre><code>## # A tibble: 18,249 x 14
+##       x1 date       average_price total_volume extra_small   x4225 x4770
+##    &lt;dbl&gt; &lt;date&gt;             &lt;dbl&gt;        &lt;dbl&gt;       &lt;dbl&gt;   &lt;dbl&gt; &lt;dbl&gt;
+##  1     0 2015-12-27          1.33       64237.       1037.  54455.  48.2
+##  2     1 2015-12-20          1.35       54877.        674.  44639.  58.3
+##  3     2 2015-12-13          0.93      118220.        795. 109150. 130. 
+##  4     3 2015-12-06          1.08       78992.       1132   71976.  72.6
+##  5     4 2015-11-29          1.28       51040.        941.  43838.  75.8
+##  6     5 2015-11-22          1.26       55980.       1184.  48068.  43.6
+##  7     6 2015-11-15          0.99       83454.       1369.  73673.  93.3
+##  8     7 2015-11-08          0.98      109428.        704. 101815.  80  
+##  9     8 2015-11-01          1.02       99811.       1022.  87316.  85.3
+## 10     9 2015-10-25          1.07       74339.        842.  64757. 113  
+## # ... with 18,239 more rows, and 7 more variables: total_bags &lt;dbl&gt;,
+## #   small_bags &lt;dbl&gt;, large_bags &lt;dbl&gt;, x_large_bags &lt;dbl&gt;, type &lt;chr&gt;,
+## #   year &lt;dbl&gt;, region &lt;chr&gt;</code></pre>
+<pre class="r"><code>avocado_short1&lt;-avocado%&gt;%
+  select(date, average_price, total_volume, region)%&gt;%
+  mutate(total_price=average_price*total_volume)
+rm(avocado_short2)</code></pre>
+<pre><code>## Warning in rm(avocado_short2): object &#39;avocado_short2&#39; not found</code></pre>
+<pre class="r"><code>avocado_short1%&gt;%head()</code></pre>
+<pre><code>## # A tibble: 6 x 5
+##   date       average_price total_volume region total_price
+##   &lt;date&gt;             &lt;dbl&gt;        &lt;dbl&gt; &lt;chr&gt;        &lt;dbl&gt;
+## 1 2015-12-27          1.33       64237. Albany      85435.
+## 2 2015-12-20          1.35       54877. Albany      74084.
+## 3 2015-12-13          0.93      118220. Albany     109945.
+## 4 2015-12-06          1.08       78992. Albany      85312.
+## 5 2015-11-29          1.28       51040. Albany      65331.
+## 6 2015-11-22          1.26       55980. Albany      70535.</code></pre>
+<pre class="r"><code>avocado_short1&lt;-avocado%&gt;%
+  select(date, average_price, total_volume, region)%&gt;%
+  transmute(total_price=average_price*total_volume)#to show only new column created
+
+avocado%&gt;%
+  group_by(type, year, region)%&gt;%
+  summarise(mean_price=mean(average_price), max_price=max(average_price))</code></pre>
+<pre><code>## `summarise()` has grouped output by &#39;type&#39;, &#39;year&#39;. You can override using the `.groups` argument.</code></pre>
+<pre><code>## # A tibble: 432 x 5
+## # Groups:   type, year [8]
+##    type          year region              mean_price max_price
+##    &lt;chr&gt;        &lt;dbl&gt; &lt;chr&gt;                    &lt;dbl&gt;     &lt;dbl&gt;
+##  1 conventional  2015 Albany                   1.17       1.45
+##  2 conventional  2015 Atlanta                  1.05       1.15
+##  3 conventional  2015 BaltimoreWashington      1.17       1.29
+##  4 conventional  2015 Boise                    1.05       1.19
+##  5 conventional  2015 Boston                   1.14       1.28
+##  6 conventional  2015 BuffaloRochester         1.40       1.59
+##  7 conventional  2015 California               1.02       1.18
+##  8 conventional  2015 Charlotte                1.15       1.27
+##  9 conventional  2015 Chicago                  1.15       1.27
+## 10 conventional  2015 CincinnatiDayton         0.977      1.1 
+## # ... with 422 more rows</code></pre>
+<pre class="r"><code>avocado_tr&lt;-avocado%&gt;%
+  group_by(type, year, region)%&gt;%
+  summarise(mean_price=mean(average_price), max_price=max(average_price))%&gt;%
+  ungroup()</code></pre>
+<pre><code>## `summarise()` has grouped output by &#39;type&#39;, &#39;year&#39;. You can override using the `.groups` argument.</code></pre>
+<pre class="r"><code>avocado_tr%&gt;%
+  count(year)</code></pre>
+<pre><code>## # A tibble: 4 x 2
+##    year     n
+##   &lt;dbl&gt; &lt;int&gt;
+## 1  2015   108
+## 2  2016   108
+## 3  2017   108
+## 4  2018   108</code></pre>
+<pre class="r"><code>avocado_tr%&gt;%
+  count(year, region)</code></pre>
+<pre><code>## # A tibble: 216 x 3
+##     year region                  n
+##    &lt;dbl&gt; &lt;chr&gt;               &lt;int&gt;
+##  1  2015 Albany                  2
+##  2  2015 Atlanta                 2
+##  3  2015 BaltimoreWashington     2
+##  4  2015 Boise                   2
+##  5  2015 Boston                  2
+##  6  2015 BuffaloRochester        2
+##  7  2015 California              2
+##  8  2015 Charlotte               2
+##  9  2015 Chicago                 2
+## 10  2015 CincinnatiDayton        2
+## # ... with 206 more rows</code></pre>
+<pre class="r"><code>avocado_tr%&gt;%
+  add_count(year, region)</code></pre>
+<pre><code>## # A tibble: 432 x 6
+##    type          year region              mean_price max_price     n
+##    &lt;chr&gt;        &lt;dbl&gt; &lt;chr&gt;                    &lt;dbl&gt;     &lt;dbl&gt; &lt;int&gt;
+##  1 conventional  2015 Albany                   1.17       1.45     2
+##  2 conventional  2015 Atlanta                  1.05       1.15     2
+##  3 conventional  2015 BaltimoreWashington      1.17       1.29     2
+##  4 conventional  2015 Boise                    1.05       1.19     2
+##  5 conventional  2015 Boston                   1.14       1.28     2
+##  6 conventional  2015 BuffaloRochester         1.40       1.59     2
+##  7 conventional  2015 California               1.02       1.18     2
+##  8 conventional  2015 Charlotte                1.15       1.27     2
+##  9 conventional  2015 Chicago                  1.15       1.27     2
+## 10 conventional  2015 CincinnatiDayton         0.977      1.1      2
+## # ... with 422 more rows</code></pre>
 </div>
 
 
