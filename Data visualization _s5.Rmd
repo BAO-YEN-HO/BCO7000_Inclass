@@ -1,0 +1,94 @@
+---
+title: "Data visualization (s5)"
+author: "BAO YEN HO"
+date: "18/05/2021"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# Data viz ggplot2 library
+
+```{r}
+library(tidyverse)
+library(janitor)
+```
+
+```{r}
+avocado<-read_csv("https://raw.githubusercontent.com/maria-pro/bco7000/main/sessions/session3/avocado.csv")
+#get clean names if not done before
+avocado<-avocado%>%janitor::clean_names()
+
+avocado_viz1<-avocado%>%
+  filter(total_volume>60000)%>%
+  ggplot(
+  aes(
+    x=average_price,
+    y=total_volume,
+    colour=year,
+    shape=type
+  )
+)+
+  geom_point()
+
+avocado_viz1
+```
+
+`mpg` dataset
+```{r}
+data(mpg)
+mpg%>%head()
+```
+
+```{r}
+avocado%>%
+  filter(total_volume<40000)%>%
+  ggplot(
+  aes(
+    x=average_price,
+    y=total_volume,
+  )
+)+
+  geom_line()
+```
+
+Working with `geom_bar`
+
+```{r}
+avocado%>%
+  ggplot(
+    aes(
+      x=type)
+    )+
+      geom_bar()
+  )
+
+```
+
+```{r}
+
+  ggplot(mpg,
+    aes(model, manufacturer)
+  )+
+      geom_point()
+  
+```
+```{r}
+ggplot(mpg,aes(cty,hwy)
+       )+
+  geom_point()
+
+ggplot(diamonds, aes(carat, price)
+)+
+  geom_point()
+
+ggplot(economics,aes(date, unemploy)
+       
+    )+geom_line()
+
+ggplot(mpg, aes(cty)
+    )+geom_histogram()
+```
+
