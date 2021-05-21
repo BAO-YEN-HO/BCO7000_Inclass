@@ -12,6 +12,14 @@ knitr::opts_chunk$set(echo = TRUE)
 # Data wrangling exercises
 
 **YEAH**
+dplyr is a grammar of data manipulation, providing a consistent set of verbs that help you solve the most common data manipulation challenges:
+
+    mutate() adds new variables that are functions of existing variables
+    select() picks variables based on their names.
+    filter() picks cases based on their values.
+    summarise() reduces multiple values down to a single summary.
+    arrange() changes the ordering of the rows.
+
 
 ```{r}
 library(tidyverse)
@@ -44,5 +52,41 @@ Let's 'select()'
 dim(avocado)
 avocado_short<-avocado%>%
   select(date, average_price, total_volume)
+```
+```{r}
+avocado%>%select(date, average_price, total_volume)
+
+avocado%>%select(-average_price) #to exclude variables
+
+avocado%>%rename(extra_small=x4046) #To rename variables
+
+avocado_short1<-avocado%>%
+  select(date, average_price, total_volume, region)%>%
+  mutate(total_price=average_price*total_volume)
+rm(avocado_short2)
+
+avocado_short1%>%head()
+
+avocado_short1<-avocado%>%
+  select(date, average_price, total_volume, region)%>%
+  transmute(total_price=average_price*total_volume)#to show only new column created
+
+avocado%>%
+  group_by(type, year, region)%>%
+  summarise(mean_price=mean(average_price), max_price=max(average_price))
+
+avocado_tr<-avocado%>%
+  group_by(type, year, region)%>%
+  summarise(mean_price=mean(average_price), max_price=max(average_price))%>%
+  ungroup()
+
+avocado_tr%>%
+  count(year)
+
+avocado_tr%>%
+  count(year, region)
+
+avocado_tr%>%
+  add_count(year, region)
 ```
 
