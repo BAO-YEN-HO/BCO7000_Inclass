@@ -124,7 +124,7 @@ hotel_stays %>%
   scale_y_continuous(labels = scales::percent_format())
 ```
 
-**Faceting**
+ **Faceting**
 
 ```{r}
 hotel_stays %>%
