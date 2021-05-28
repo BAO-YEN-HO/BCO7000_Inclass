@@ -1,0 +1,104 @@
+---
+title: "Session 8"
+author: "BAO YEN HO"
+date: "28/05/2021"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+library(tidyverse)
+library(lubridate)
+library(scales)
+library(skimr)
+#Check **theme_set(theme_light())**
+```
+
+# Data wrangling anf visualisation
+
+```{r}
+pizza<- readr::read_csv("https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2019/2019-10-01/pizza_jared.csv")
+skim(pizza)
+
+# Remove variable in the dataset
+pizza<-pizza%>%select(-question)
+skim(pizza)
+```
+
+`answer` should be factor levels
+
+```{r}
+pizza<-pizza%>%
+  mutate(answer=as_factor(answer))
+
+class(pizza$answer)
+
+levels(pizza$answer)
+
+```
+
+**Relevel factor variable to order**
+
+```{r}
+answer <- c("Never Again", "Poor", "Average", "Good", "Excellent")
+pizza<-pizza%>%
+  mutate(answer=fct_relevel(answer, answer_orders))
+  levels(pizza$answer)
+
+```
+
+Recode `place` to factor
+```{r}
+pizza<-pizza%>%
+  mutate(place=as_factor(place))
+
+```
+
+**Format date&time**
+```{r}
+pizza<-pizza %>%
+  mutate(time=as.POSIXct(time, origin="1970-01-01"))
+
+pizza<-pizza%>%
+  mutate(date=as.Date(time))
+
+```
+
+```{r}
+by_place_answer<-pizza%>%
+  group_by(place, answer)%>%
+  summarise(votes = sum(votes))
+
+by_place_answer<-by_place_answer%>%
+  mutate(total = sum(votes),
+         percent = votes / total,
+         answer_integer = as.integer(answer),
+         average = sum(answer_integer * percent)) %>%
+  ungroup()
+
+by_place <- by_place_answer %>%
+  distinct(place, total, average)
+```
+
+Reordering factors for data viz
+
+```{r}
+by_place_answer %>%
+  filter(as.integer(fct_reorder(place, total, .desc = TRUE)) <= 16,
+         answer != "Fair") %>%
+  mutate(place = glue::glue("{ place } ({ total })"),
+         place = fct_reorder(place, average)) %>%
+  ggplot(aes(answer, percent)) +
+  geom_col() +
+  facet_wrap(~ place) +
+  scale_y_continuous(labels = scales::percent) +
+  theme(axis.text.x = element_text(angle = 90, hjust = 1)) +
+  labs(x = "",
+       y = "% of respondents",
+       title = "What is the most popular pizza place in Open Stats meetup?",
+       subtitle = "Only the 16 pizza places with the most respondents. # respondents shown in parentheses.")
+```
+
