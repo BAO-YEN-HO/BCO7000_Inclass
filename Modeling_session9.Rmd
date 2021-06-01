@@ -1,0 +1,112 @@
+---
+title: "Data modeling - session 9"
+author: "BAO YEN HO"
+date: "01/06/2021"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+https://maria-pro.github.io/bco7000/sessions/session9/slides.html#2
+
+# co-variation
+Negative relationship
+zero-relationship <- independent variables
+
+```{r}
+library(tidyverse)
+library(scales)
+theme_set(theme_light()) #check in 'Help'
+```
+
+# Exploratory data analysis
+```{r}
+data(diamonds)
+```
+
+```{r}
+diamonds%>%
+  ggplot(aes(cut, binwidth=0.5)
+         )+
+  geom_bar(fill="orange")
+
+diamonds%>%
+  ggplot(aes(color, binwidth=0.6)
+         )+
+  geom_bar(fill="blue")
+
+diamonds%>%
+  ggplot(aes(clarity, binwidth=0.4)
+         )+
+  geom_bar(fill="red")
+
+diamonds%>%
+  ggplot(aes(price, binwidth=0.4)
+         )+
+  geom_histogram(fill="darkgreen")
+
+diamonds%>%
+  ggplot(aes(carat)
+         )+
+  geom_histogram(fill="darkblue")
+```
+```{r}
+data(faithful)
+```
+
+```{r}
+diamonds%>%
+  ggplot(aes(y)
+         )+
+  geom_histogram(binwidth=0.5, fill="darkred")
+
+diamonds%>%
+  ggplot(aes(y)
+         )+
+  geom_histogram(fill="darkred")
+```
+# geom_boxplot
+```{r}
+diamonds%>%
+  ggplot(aes(cut, price)
+  )+
+  geom_boxplot()
+```
+```{r}
+data(mpg)
+```
+
+```{r}
+mpg%>%
+  ggplot(aes(x=reorder(class, hwy, FUN=median), y=hwy)
+    )+
+  geom_boxplot()
+```
+```{r}
+diamonds%>%
+  ggplot(aes(cut, color))+
+  geom_count()
+```
+Alpha = transparency
+
+## Modeling
+Models = show the systematic relationship b/w different variables
+Models = regression models
+       = classification models (categories variables)
+
+### Linear regression
+```{r}
+#install.packages("readxl")
+library(readxl)
+ageandheight <- read_excel("ageandheight.xls", sheet = "Hoja2") #to import .xls data
+```
+
+# Run regression (lm=linear regression)
+```{r}
+lmHeight2<-lm(height~age + no_siblings, data = ageandheight) #to predict the height based on the age and no_Sibling
+summary(lmHeight2)
+# we see the formula that we wrote, coefficients for each dependent variable: 'age` is positive and `no_siblings` is big number of negative means it is a critical factor.
+```
+
