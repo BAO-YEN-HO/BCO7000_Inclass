@@ -105,7 +105,7 @@ ageandheight <- read_excel("ageandheight.xls", sheet = "Hoja2") #to import .xls 
 
 # Run regression (lm=linear regression)
 ```{r}
-lmHeight2<-lm(height~age + no_siblings, data = ageandheight) #to predict the height based on the age and no_Sibling
+lmHeight2<-lm(height~age + no_siblings, data = ageandheight) #to predict the height based on the age and no_Siblings
 summary(lmHeight2)
 # we see the formula that we wrote, coefficients for each dependent variable: 'age` is positive and `no_siblings` is big number of negative means it is a critical factor.
 ```
